@@ -1,4 +1,4 @@
-package lambda.part1.example;
+package lambda.part1.part1.example;
 
 import data.Person;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class Lambdas04 {
             }
         });
 
-        //person = new Person("a", "a", 44);
+       // person = new Person("a", "a", 44);
     }
 
     @Test
