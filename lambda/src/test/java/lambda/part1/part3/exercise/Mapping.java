@@ -31,18 +31,18 @@ public class Mapping {
         // ([T], T -> R) -> [R]
         public <R> MapHelper<R> map(Function<T, R> f) {
             // TODO
-            // throw new UnsupportedOperationException();
-            List<R> newList=new ArrayList<>();
-            for(int i=0; i<this.list.size();i++){
-                newList.add(f.apply(list.get(i)));
-            }
-            return new MapHelper(newList);
+            List<R> newList=new ArrayList<>(list.size());
+            list.forEach(t -> newList.add(f.apply(t)));
+            return new MapHelper<R>(newList);
+
         }
 
         // ([T], T -> [R]) -> [R]
         public <R> MapHelper<R> flatMap(Function<T, List<R>> f) {
             // TODO
-            throw new UnsupportedOperationException();
+            List<R> newList = new ArrayList<>(list.size());
+            list.forEach(t -> newList.addAll(f.apply(t)));
+            return new MapHelper<R>(newList);
         }
     }
 
@@ -76,14 +76,6 @@ public class Mapping {
                 .map(TODO) // Заменить все qa на QA
                 * */
                 .getList();
-        //My additional check
-        for(int i=0; i<mappedEmployees.size();i++) {
-            System.out.println(mappedEmployees.get(i).getPerson().getFirstName());
-            for(int j=0; j<mappedEmployees.get(i).getJobHistory().size();j++){
-                System.out.println(mappedEmployees.get(i).getJobHistory().get(j).getDuration());
-            }
-        }
-        //
         List<Employee> expectedResult = Arrays.asList(
                 new Employee(new Person("John", "Galt", 30),
                         Arrays.asList(
@@ -105,19 +97,12 @@ public class Mapping {
         assertEquals(mappedEmployees, expectedResult);
     }
 
-    //I add this method
-    private List<JobHistoryEntry> replaceQa(List<JobHistoryEntry> jobHistory) {
-        for(int i=0; i<jobHistory.size();i++){
-            if("qa".equals(jobHistory.get(i).getPosition()))
-                jobHistory.set(i,jobHistory.get(i).withPosition("QA"));
-        }
-        return jobHistory;
+    private List<JobHistoryEntry> replaceQa(List<JobHistoryEntry> jobHistoryEntries) {
+        return new MapHelper<>(jobHistoryEntries).map(e -> e.getPosition().equals("qa") ? e.withPosition("QA") : e).getList();
     }
-    //I add this method
-    private List<JobHistoryEntry> addOneYear(List<JobHistoryEntry> jobHistory) {
-        for(int i=0; i<jobHistory.size();i++)
-            jobHistory.set(i,jobHistory.get(i).withDuration(jobHistory.get(i).getDuration() + 1));
-        return jobHistory;
+
+    private List<JobHistoryEntry> addOneYear(List<JobHistoryEntry> jobHistoryEntries) {
+        return new MapHelper<>(jobHistoryEntries).map(e -> e.withDuration(e.getDuration() + 1)).getList();
     }
 
     private static class LazyMapHelper<T, R> {
@@ -136,18 +121,12 @@ public class Mapping {
 
         public List<R> force() {
             // TODO
-            List<R> result = new ArrayList<>();
-            for(int i=0;i<list.size();i++){
-                result.add(function.apply(list.get(i)));
-            }
-            return result;
-            //throw new UnsupportedOperationException();
+            return new MapHelper<T>(list).map(function).getList();
         }
 
         public <R2> LazyMapHelper<T, R2> map(Function<R, R2> f) {
             // TODO
-            return new LazyMapHelper(list,function.andThen(f));
-            //throw new UnsupportedOperationException();
+            return new LazyMapHelper<T, R2>(list, function.andThen(f));
         }
     }
 
@@ -187,13 +166,6 @@ public class Mapping {
                 */
                 .force();
 
-        for(int i=0; i<mappedEmployees.size();i++) {
-            System.out.println(mappedEmployees.get(i).getPerson().getFirstName());
-            for(int j=0; j<mappedEmployees.get(i).getJobHistory().size();j++){
-                System.out.println(mappedEmployees.get(i).getJobHistory().get(j).getDuration());
-            }
-        }
-
         List<Employee> expectedResult = Arrays.asList(
                 new Employee(new Person("John", "Galt", 30),
                         Arrays.asList(
@@ -214,4 +186,5 @@ public class Mapping {
 
         assertEquals(mappedEmployees, expectedResult);
     }
+
 }
