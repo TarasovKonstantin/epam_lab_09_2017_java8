@@ -1,10 +1,8 @@
-package lambda.part1.part2.example;
+package lamda.part2.example;
 
 import data.Person;
 import org.junit.Test;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.*;
 

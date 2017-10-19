@@ -1,4 +1,4 @@
-package lambda.part1.part1.exercise;
+package lamda.part1.exercise;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;

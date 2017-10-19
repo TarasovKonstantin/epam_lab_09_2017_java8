@@ -1,4 +1,4 @@
-package lambda.part1.part3.example;
+package lamda.part3.example;
 
 import data.Employee;
 import data.JobHistoryEntry;

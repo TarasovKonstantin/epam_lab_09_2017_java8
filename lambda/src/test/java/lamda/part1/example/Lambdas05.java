@@ -1,4 +1,4 @@
-package lambda.part1.part1.example;
+package lamda.part1.example;
 
 import data.Person;
 import org.junit.Test;
@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class Lambdas05 {

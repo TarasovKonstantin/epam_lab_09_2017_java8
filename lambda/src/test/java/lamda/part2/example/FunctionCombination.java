@@ -1,11 +1,10 @@
-package lambda.part1.part2.example;
+package lamda.part2.example;
 
 import data.Person;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 

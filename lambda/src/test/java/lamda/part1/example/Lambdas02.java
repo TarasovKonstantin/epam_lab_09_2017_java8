@@ -1,4 +1,4 @@
-package lambda.part1.part1.example;
+package lamda.part1.example;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;

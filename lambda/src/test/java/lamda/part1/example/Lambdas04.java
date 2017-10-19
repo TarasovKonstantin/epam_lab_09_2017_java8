@@ -1,4 +1,4 @@
-package lambda.part1.part1.example;
+package lamda.part1.example;
 
 import data.Person;
 import org.junit.Test;
