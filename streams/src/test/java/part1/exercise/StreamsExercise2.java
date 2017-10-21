@@ -6,6 +6,7 @@ import data.Person;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -67,8 +68,12 @@ public class StreamsExercise2 {
      */
     @Test
     public void employersStuffList() {
+
         List<Employee> employees = getEmployees();
-        Map<String, Set<Person>> result = null; // TODO
+        Map<String, Set<Person>> result = employees.stream()
+                                                    .flatMap(person -> person.getJobHistory().stream()
+                                                    .collect(Collectors.toMap(JobHistoryEntry::getEmployer, current -> person.getPerson(), (oldValue, newValue) -> oldValue)).entrySet().stream())
+                                                    .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.mapping(Map.Entry::getValue, Collectors.toSet())));
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("epam", new HashSet<>(Arrays.asList(
@@ -148,8 +153,12 @@ public class StreamsExercise2 {
      * ]
      */
     @Test
-    public void indexByFirstEmployer() {
-        Map<String, Set<Person>> result = null; // TODO
+    public void  indexByFirstEmployer() {
+        Map<String, Set<Person>> result = getEmployees().stream()
+                .flatMap(person->person.getJobHistory().stream().limit(1)
+                        .collect(Collectors.toMap(JobHistoryEntry::getEmployer,x->person.getPerson(),(oldValue, newValue) -> oldValue)).entrySet().stream())
+                .collect(Collectors.groupingBy(Map.Entry::getKey,
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toSet())));
 
 
         Map<String, Set<Person>> expected = new HashMap<>();

@@ -129,9 +129,7 @@ public class Mapping {
             return new LazyMapHelper<T, R2>(list, function.andThen(f));
         }
     }
-
-    // TODO * LazyFlatMapHelper
-
+    
     @Test
     public void lazyMapping() {
         List<Employee> employees = Arrays.asList(
