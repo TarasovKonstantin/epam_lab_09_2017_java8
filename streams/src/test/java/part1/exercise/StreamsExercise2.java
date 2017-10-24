@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static java.util.stream.Collectors.*;
+import static java.util.Comparator.comparing;
 
 /**
  * @see <a href="https://youtu.be/kxgo7Y4cdA8">Через тернии к лямбдам, часть 1</a>
@@ -187,7 +189,15 @@ public class StreamsExercise2 {
      */
     @Test
     public void greatestExperiencePerEmployer() {
-        Map<String, Person> result = null;// TODO
+        //Map<String, Person> result = null;// TODO
+
+        Map<String, Person> result = getEmployees().stream()
+                .flatMap(hEntry->hEntry.getJobHistory().stream()
+                        .map(helper -> new EmployeeDurationHalper(hEntry.getPerson(), helper.getEmployer(),helper.getDuration())))
+                        .collect(groupingBy(EmployeeDurationHalper::getJob, collectingAndThen(maxBy(comparing(EmployeeDurationHalper::getDuration)),
+                                t -> t.get().getPerson())));
+
+
 
         Map<String, Person> expected = new HashMap<>();
         expected.put("epam", new Person("John", "White", 28));
@@ -196,6 +206,69 @@ public class StreamsExercise2 {
         expected.put("abc", new Person("John", "Doe", 30));
         assertEquals(expected, result);
     }
+
+    static class EmployeeDurationHalper implements Comparable<EmployeeDurationHalper>{
+        private Person person;
+        private String job;
+        private int duration;
+
+        @Override
+        public int compareTo(EmployeeDurationHalper employeeDurationHalper) {
+            return this.getDuration() - employeeDurationHalper.getDuration();
+        }
+
+        public EmployeeDurationHalper(Person person, String job, int duration) {
+            this.person = person;
+            this.job = job;
+            this.duration = duration;
+        }
+
+        public Person getPerson() {
+            return person;
+        }
+
+        public String getJob() {
+            return job;
+        }
+
+        public int getDuration() {
+            return duration;
+        }
+
+
+    }
+
+    /**
+     * try implement without streams
+     */
+
+    @Test
+    public void testExcercise(){
+        List<Employee> employees = getEmployees();
+        ArrayList<EmployeeDurationHalper> employeeDurationHalpers = new ArrayList<>();
+
+        for (Employee employee : employees) {
+            List<JobHistoryEntry> jobHistory = employee.getJobHistory();
+                for (JobHistoryEntry jobHistoryEntry : jobHistory) {
+                    employeeDurationHalpers.add(new EmployeeDurationHalper(employee.getPerson(),jobHistoryEntry.getEmployer(),jobHistoryEntry.getDuration()));
+                }
+        }
+        Collections.sort(employeeDurationHalpers);
+
+        HashMap<String, Person> result = new HashMap<>();
+
+
+
+        for (EmployeeDurationHalper employeeDurationHalper : employeeDurationHalpers) {
+            result.put(employeeDurationHalper.getJob(), employeeDurationHalper.getPerson());
+        }
+
+
+        System.out.println(result);
+
+    }
+
+
 
 
     private List<Employee> getEmployees() {
